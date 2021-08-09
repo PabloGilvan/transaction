@@ -44,7 +44,10 @@ func (repo AccountRepositoryImpl) SaveAccount(accountModel Account) (*Account, e
 		return nil, err
 	}
 
-	conn.Save(accountModel)
+	err = conn.Save(accountModel).Error
+	if err != nil {
+		return nil, err
+	}
 
 	return &accountModel, nil
 }

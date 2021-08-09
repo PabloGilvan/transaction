@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"bytes"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -185,5 +186,49 @@ func (s *AccountSuite) TestGetAccount() {
 
 		assert.Equal(s.T(), http.StatusNotFound, responseRecorder.Result().StatusCode)
 		assert.Equal(s.T(), commons.ErrAccountNotFound.Error(), response.ErrorMessage)
+	})
+}
+
+func (s *AccountSuite) TestPostAccount() {
+	s.T().Run("test save an account with success", func(t *testing.T) {
+		s.initTest()
+		s.addLoadAccountRow()
+
+		s.helperMock.On("GetDatabaseConnection").Return(s.gdb, nil)
+
+		const sqlInsert = `UPDATE "accounts" SET "id"=$1,"number"=$2,"document_number"=$3,"active"=$4,"create_date"=$5,"update_date"=$6 WHERE "id" = $7`
+
+		s.dbMock.ExpectBegin()
+		s.dbMock.ExpectExec(regexp.QuoteMeta(sqlInsert)).WithArgs(
+			sqlmock.AnyArg(),
+			sqlmock.AnyArg(),
+			s.model.DocumentNumber,
+			s.model.Active,
+			sqlmock.AnyArg(),
+			sqlmock.AnyArg(),
+			sqlmock.AnyArg(),
+		).WillReturnResult(sqlmock.NewResult(0, 1))
+		s.dbMock.ExpectCommit()
+
+		body := accountService.AccountPersist{DocumentNumber: s.model.DocumentNumber}
+		jsonBody, err := json.Marshal(body)
+		assert.Nil(s.T(), err)
+
+		request := httptest.NewRequest("POST", fmt.Sprintf("/v1/accounts/"), bytes.NewReader(jsonBody))
+
+		responseRecorder := s.executeRequest(request)
+
+		if err := s.dbMock.ExpectationsWereMet(); err != nil {
+			s.T().Errorf("there were unfulfilled expectations: %s", err)
+		}
+		bodyResp, err := ioutil.ReadAll(responseRecorder.Body)
+		assert.Nil(s.T(), err)
+
+		var response accountService.AccountResponse
+		err = json.Unmarshal(bodyResp, &response)
+		assert.Nil(s.T(), err)
+
+		assert.Equal(s.T(), http.StatusCreated, responseRecorder.Result().StatusCode)
+		assert.Equal(s.T(), s.model.DocumentNumber, response.DocumentNumber)
 	})
 }
