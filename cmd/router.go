@@ -2,6 +2,8 @@ package main
 
 import (
 	"github.com/PabloGilvan/transaction/cmd/handlers"
+	"github.com/PabloGilvan/transaction/commons"
+	"github.com/PabloGilvan/transaction/internal/config/global"
 	"github.com/PabloGilvan/transaction/internal/container"
 	"github.com/gin-gonic/gin"
 )
@@ -25,14 +27,24 @@ func StartServer(container container.Dependency) {
 
 func setupAccountPaths(router *gin.RouterGroup, container container.Dependency) {
 	var accountController = handlers.NewAccountController(container.Services.AccountService)
+	var transactionController = handlers.NewTransactionController(container.Services.TransactionService, container.Services.AccountService)
 
 	account := router.Group("/accounts")
 	{
 		account.POST("/", accountController.CreateAccount)
 		account.GET("/:id", accountController.LoadAccount)
 	}
+
+	transactions := router.Group("/transactions")
+	{
+		transactions.POST("/", transactionController.SaveTransaction)
+	}
 }
 
 func getPort() string {
-	return "8080"
+	var port = global.Viper.GetString("app.port")
+	if len(port) == 0 {
+		return commons.DEFAULT_PORT
+	}
+	return port
 }

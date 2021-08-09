@@ -1,13 +1,13 @@
 package operation
 
 import (
+	"github.com/PabloGilvan/transaction/commons"
 	"github.com/PabloGilvan/transaction/internal/db"
-	"gorm.io/gorm"
 )
 
 type OperationTypeRepository interface {
 	SaveOperation(operationModel OperationType) (*OperationType, error)
-	LoadAccount(id string) (*OperationType, error)
+	LoadOperation(id int) (*OperationType, error)
 }
 
 type OperationTypeRepositoryImpl struct {
@@ -31,16 +31,16 @@ func (repo OperationTypeRepositoryImpl) SaveOperation(operationModel OperationTy
 	return &operationModel, nil
 }
 
-func (repo OperationTypeRepositoryImpl) LoadAccount(id string) (*OperationType, error) {
+func (repo OperationTypeRepositoryImpl) LoadOperation(id int) (*OperationType, error) {
 	conn, err := repo.DatabaseManager.GetDatabaseConnection()
 	if err != nil {
 		return nil, err
 	}
 
 	var operation OperationType
-	conn.Find(operation, " id = ? and active == 1 ", id)
-	if len(operation.ID) == 0 {
-		return nil, gorm.ErrRecordNotFound
+	conn.First(&operation, " id = ? ", id)
+	if operation.ID == 0 {
+		return nil, commons.ErrOperationNotFound
 	}
 
 	return &operation, nil

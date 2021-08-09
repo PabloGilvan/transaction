@@ -2,9 +2,12 @@ package container
 
 import (
 	"github.com/PabloGilvan/transaction/internal/db"
-	"github.com/PabloGilvan/transaction/internal/services/account"
+	accountService "github.com/PabloGilvan/transaction/internal/services/account"
+	transactionService "github.com/PabloGilvan/transaction/internal/services/transaction"
 	"github.com/PabloGilvan/transaction/pkg/domains"
-	account2 "github.com/PabloGilvan/transaction/pkg/domains/account"
+	"github.com/PabloGilvan/transaction/pkg/domains/account"
+	"github.com/PabloGilvan/transaction/pkg/domains/operation"
+	"github.com/PabloGilvan/transaction/pkg/domains/transaction"
 )
 
 type components struct {
@@ -12,7 +15,8 @@ type components struct {
 }
 
 type services struct {
-	AccountService account.AccountService
+	AccountService     accountService.AccountService
+	TransactionService transactionService.TransactionService
 }
 
 type Dependency struct {
@@ -25,16 +29,17 @@ func Injector() Dependency {
 
 	domains.StartMigrationPlan(dbm)
 
-	/*var operationRepository = operation.NewOperationTypeRepository(dbm)
-	var transactionRepository = transaction.NewTransactionRepository(dbm)*/
-	var accountRepository = account2.NewAccountRepository(dbm)
+	var operationRepository = operation.NewOperationTypeRepository(dbm)
+	var transactionRepository = transaction.NewTransactionRepository(dbm)
+	var accountRepository = account.NewAccountRepository(dbm)
 
 	return Dependency{
 		Components: components{
 			DatabaseManager: dbm,
 		},
 		Services: services{
-			AccountService: account.NewAccountService(accountRepository),
+			AccountService:     accountService.NewAccountService(accountRepository),
+			TransactionService: transactionService.NewTransactionService(transactionRepository, operationRepository),
 		},
 	}
 }
