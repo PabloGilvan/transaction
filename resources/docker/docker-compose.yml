@@ -1,4 +1,4 @@
-version: '3.9'
+version: '3'
 services:
   postgres:
     image: postgres
@@ -16,7 +16,7 @@ services:
       test: [ "CMD-SHELL", "pg_isready --dbname=transaction --username=postgres" ]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
 
   api-service:
     build: .
@@ -25,6 +25,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    links:
+      - postgres:postgres
     environment:
       - APP_DATABASE_HOST=127.0.0.1
       - APP_DATABASE_USER=postgres

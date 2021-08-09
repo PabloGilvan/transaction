@@ -9,6 +9,7 @@ import (
 )
 
 func StartMigrationPlan(dbm db.DatabaseManager) {
+	time.Sleep(20 * time.Second)
 	err := dbm.Migrate(&account.Account{})
 	if err != nil {
 		panic(err)
