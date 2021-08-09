@@ -1,0 +1,113 @@
+definitions:
+  account.AccountPersist:
+    properties:
+      document_number:
+        type: string
+    required:
+    - document_number
+    type: object
+  account.AccountResponse:
+    properties:
+      active:
+        type: boolean
+      createDate:
+        type: string
+      document_number:
+        type: string
+      id:
+        type: string
+      number:
+        type: string
+      updateDate:
+        type: string
+    type: object
+  transaction.TransactionPersist:
+    properties:
+      account_id:
+        type: string
+      amount:
+        type: number
+      operation_type_id:
+        type: integer
+    type: object
+  transaction.TransactionResponse:
+    properties:
+      transaction_identifier:
+        type: string
+    type: object
+info:
+  contact: {}
+  license: {}
+paths:
+  /accounts:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new Account generating am account number
+      parameters:
+      - description: Object for persisting the account
+        in: body
+        name: content
+        required: true
+        schema:
+          $ref: '#/definitions/account.AccountPersist'
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/account.AccountResponse'
+        "400":
+          description: Bad request
+      summary: Creates an Account
+      tags:
+      - Accounts
+  /accounts/{id}:
+    get:
+      consumes:
+      - application/json
+      description: |-
+        Load an account by the UUID identifier
+        Accounts resources can be used to create ("/accounts" POST)
+      parameters:
+      - description: Person's identification code
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/account.AccountResponse'
+        "400":
+          description: account inactive
+        "404":
+          description: account not found
+      summary: Load an account
+      tags:
+      - Accounts
+  /transactions/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Persist a transaction validating the operation type and account
+      parameters:
+      - description: Object for persisting the transaction
+        in: body
+        name: content
+        required: true
+        schema:
+          $ref: '#/definitions/transaction.TransactionPersist'
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/transaction.TransactionResponse'
+        "400":
+          description: account inactive
+        "404":
+          description: account not found
+      summary: Persist a transaction
+      tags:
+      - Transaction
+swagger: "2.0"

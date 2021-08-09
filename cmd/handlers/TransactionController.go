@@ -21,6 +21,24 @@ func NewTransactionController(service transaction.TransactionService, accountSer
 	}
 }
 
+func (crtl TransactionController) Router(router *gin.RouterGroup) {
+	transactions := router.Group("/transactions")
+	{
+		transactions.POST("/", crtl.SaveTransaction)
+	}
+}
+
+// SaveTransaction @Title saveTransaction
+// @Tags Transaction
+// @Summary Persist a transaction
+// @Description Persist a transaction validating the operation type and account
+// @Param content body transaction.TransactionPersist true "Object for persisting the transaction"
+// @Success 201 {object} transaction.TransactionResponse
+// @Failure 400 "operation not found"
+// @Failure 400 "account inactive"
+// @Failure 404 "account not found"
+// @Accept json
+// @Router /transactions/{id} [get]
 func (crtl TransactionController) SaveTransaction(c *gin.Context) {
 
 	var transactionPersist transaction.TransactionPersist
@@ -42,11 +60,4 @@ func (crtl TransactionController) SaveTransaction(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusAccepted, transactionIdentifier)
-}
-
-func (crtl TransactionController) Router(router *gin.RouterGroup) {
-	transactions := router.Group("/transactions")
-	{
-		transactions.POST("/", crtl.SaveTransaction)
-	}
 }

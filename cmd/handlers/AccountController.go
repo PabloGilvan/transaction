@@ -26,6 +26,15 @@ func (crtl AccountController) Router(router *gin.RouterGroup) {
 	}
 }
 
+// CreateAccount @Title createAccount
+// @Tags Accounts
+// @Summary Creates an Account
+// @Description Creates a new Account generating am account number
+// @Param content body account.AccountPersist true "Object for persisting the account"
+// @Success 201 {object} account.AccountResponse
+// @Failure 400 "Bad request"
+// @Accept json
+// @Router /accounts [post]
 func (crtl AccountController) CreateAccount(c *gin.Context) {
 
 	var accountPersist account.AccountPersist
@@ -42,6 +51,17 @@ func (crtl AccountController) CreateAccount(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, response)
 }
 
+// LoadAccount @Title loadAccount
+// @Tags Accounts
+// @Summary Load an account
+// @Description Load an account by the UUID identifier
+// @Description Accounts resources can be used to create ("/accounts" POST)
+// @Param id path string true "Person's identification code"
+// @Success 201 {object} account.AccountResponse
+// @Failure 400 "account inactive"
+// @Failure 404 "account not found"
+// @Accept json
+// @Router /accounts/{id} [get]
 func (crtl AccountController) LoadAccount(c *gin.Context) {
 	accountID := c.Param("id")
 

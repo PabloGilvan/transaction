@@ -1,0 +1,173 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {},
+        "license": {}
+    },
+    "paths": {
+        "/accounts": {
+            "post": {
+                "description": "Creates a new Account generating am account number",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Creates an Account",
+                "parameters": [
+                    {
+                        "description": "Object for persisting the account",
+                        "name": "content",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/account.AccountPersist"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/account.AccountResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
+        "/accounts/{id}": {
+            "get": {
+                "description": "Load an account by the UUID identifier\nAccounts resources can be used to create (\"/accounts\" POST)",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Load an account",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Person's identification code",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/account.AccountResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "account inactive"
+                    },
+                    "404": {
+                        "description": "account not found"
+                    }
+                }
+            }
+        },
+        "/transactions/{id}": {
+            "get": {
+                "description": "Persist a transaction validating the operation type and account",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transaction"
+                ],
+                "summary": "Persist a transaction",
+                "parameters": [
+                    {
+                        "description": "Object for persisting the transaction",
+                        "name": "content",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/transaction.TransactionPersist"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/transaction.TransactionResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "account inactive"
+                    },
+                    "404": {
+                        "description": "account not found"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "account.AccountPersist": {
+            "type": "object",
+            "required": [
+                "document_number"
+            ],
+            "properties": {
+                "document_number": {
+                    "type": "string"
+                }
+            }
+        },
+        "account.AccountResponse": {
+            "type": "object",
+            "properties": {
+                "active": {
+                    "type": "boolean"
+                },
+                "createDate": {
+                    "type": "string"
+                },
+                "document_number": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "number": {
+                    "type": "string"
+                },
+                "updateDate": {
+                    "type": "string"
+                }
+            }
+        },
+        "transaction.TransactionPersist": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "operation_type_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "transaction.TransactionResponse": {
+            "type": "object",
+            "properties": {
+                "transaction_identifier": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
