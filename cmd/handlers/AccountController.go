@@ -56,7 +56,7 @@ func (crtl AccountController) CreateAccount(c *gin.Context) {
 // @Summary Load an account
 // @Description Load an account by the UUID identifier
 // @Description Accounts resources can be used to create ("/accounts" POST)
-// @Param id path string true "Person's identification code"
+// @Param id path string true "Account's identification code"
 // @Success 201 {object} account.AccountResponse
 // @Failure 400 "account inactive"
 // @Failure 404 "account not found"
