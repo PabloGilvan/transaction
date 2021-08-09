@@ -2,7 +2,7 @@ version: '3'
 services:
   postgres:
     image: postgres
-    container_name: postgres
+    container_name: postgres-app
     environment:
       POSTGRES_PASSWORD: "postgres"
       APP_DB_NAME: transaction
@@ -13,23 +13,8 @@ services:
     networks:
       - postgres-network
 
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: "postgres"
-      PGADMIN_DEFAULT_PASSWORD: "postgres"
-    ports:
-      - "16543:80"
-    depends_on:
-      - postgres
-    networks:
-      - postgres-network
-
   api-service:
-    build:
-      image: api-service
-      context: api-service
-      dockerfile: Dockerfile
+    build: .
     ports:
       - "8080:8080"
     depends_on:

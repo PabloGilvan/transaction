@@ -18,5 +18,5 @@ RUN  mkdir -p /go/bin && \
      chmod -R 755 /logs
 WORKDIR /go/bin
 COPY --from=builder /data/app/bin/api .
-EXPOSE 8080 5432
+EXPOSE 8080
 ENTRYPOINT /go/bin/api
