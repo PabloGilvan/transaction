@@ -12,13 +12,19 @@ services:
       - "5432:5432"
     networks:
       - postgres-network
+    healthcheck:
+      test: [ "CMD-SHELL", "psql -l | grep transaction | wc -l" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   api-service:
     build: .
     ports:
       - "8080:8080"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     networks:
       - postgres-network
 
