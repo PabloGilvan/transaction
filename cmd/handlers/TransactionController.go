@@ -43,3 +43,10 @@ func (crtl TransactionController) SaveTransaction(c *gin.Context) {
 
 	c.IndentedJSON(http.StatusAccepted, transactionIdentifier)
 }
+
+func (crtl TransactionController) Router(router *gin.RouterGroup) {
+	transactions := router.Group("/transactions")
+	{
+		transactions.POST("/", crtl.SaveTransaction)
+	}
+}

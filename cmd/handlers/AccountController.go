@@ -18,6 +18,14 @@ func NewAccountController(service account.AccountService) AccountController {
 	}
 }
 
+func (crtl AccountController) Router(router *gin.RouterGroup) {
+	routerGroup := router.Group("/accounts")
+	{
+		routerGroup.POST("/", crtl.CreateAccount)
+		routerGroup.GET("/:id", crtl.LoadAccount)
+	}
+}
+
 func (crtl AccountController) CreateAccount(c *gin.Context) {
 
 	var accountPersist account.AccountPersist

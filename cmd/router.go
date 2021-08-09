@@ -29,16 +29,8 @@ func setupAccountPaths(router *gin.RouterGroup, container container.Dependency) 
 	var accountController = handlers.NewAccountController(container.Services.AccountService)
 	var transactionController = handlers.NewTransactionController(container.Services.TransactionService, container.Services.AccountService)
 
-	account := router.Group("/accounts")
-	{
-		account.POST("/", accountController.CreateAccount)
-		account.GET("/:id", accountController.LoadAccount)
-	}
-
-	transactions := router.Group("/transactions")
-	{
-		transactions.POST("/", transactionController.SaveTransaction)
-	}
+	accountController.Router(router)
+	transactionController.Router(router)
 }
 
 func getPort() string {
