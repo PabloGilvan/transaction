@@ -91,3 +91,11 @@ func StartMigrationPlan(dbm db.DatabaseManager) {
 	migrateOperationType(dbm)
 }
 ```
+> Tentei colocar um validador, para prosseguir com a criação do serviço somente após ter criado a base, mas acabou não funcionando:
+```yaml
+healthcheck:
+      test: [ "CMD-SHELL", "pg_isready --dbname=transaction --username=postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+```
