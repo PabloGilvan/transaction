@@ -50,7 +50,7 @@ func (crtl AccountController) LoadAccount(c *gin.Context)
 ```
 
 ## Test
-Casos de testes foram criados somente na camada do construtor, visando um teste que valide toda a integração das camadas, somente a camada de base que tem seu comportamento `mocado`.
+Casos de testes foram criados somente na camada do *controller*, visando um teste que valide toda a integração das camadas, somente a camada de base que tem seu comportamento `mocado`.
 Dado o tempo acabei não criando testes para o `TransactionController`.
 ```go
 type AccountSuite struct {
