@@ -18,20 +18,20 @@ services:
       timeout: 5s
       retries: 10
 
-  api-service:
-    build: .
-    ports:
-      - "8080:8080"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    links:
-      - postgres:postgres
-    environment:
-      - APP_DATABASE_HOST=127.0.0.1
-      - APP_DATABASE_USER=postgres
-    networks:
-      - postgres-network
+#  api-service:
+#    build: .
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      postgres:
+#        condition: service_healthy
+#    links:
+#      - postgres:postgres
+#    environment:
+#      - APP_DATABASE_HOST=127.0.0.1
+#      - APP_DATABASE_USER=postgres
+#    networks:
+#      - postgres-network
 
 networks:
   postgres-network:

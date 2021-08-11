@@ -12,3 +12,7 @@ type OperationType struct {
 	CreateDate                    time.Time
 	UpdateDate                    time.Time
 }
+
+func (t OperationType) IsCreditTransaction() bool {
+	return !t.ShouldUseMultiplicationFactor && t.MultiplicationFactor >= 0
+}

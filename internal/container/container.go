@@ -31,15 +31,16 @@ func Injector() Dependency {
 
 	var operationRepository = operation.NewOperationTypeRepository(dbm)
 	var transactionRepository = transaction.NewTransactionRepository(dbm)
-	var accountRepository = account.NewAccountRepository(dbm)
+
+	var accountService = accountService.NewAccountService(account.NewAccountRepository(dbm))
 
 	return Dependency{
 		Components: components{
 			DatabaseManager: dbm,
 		},
 		Services: services{
-			AccountService:     accountService.NewAccountService(accountRepository),
-			TransactionService: transactionService.NewTransactionService(transactionRepository, operationRepository),
+			AccountService:     accountService,
+			TransactionService: transactionService.NewTransactionService(transactionRepository, operationRepository, accountService),
 		},
 	}
 }

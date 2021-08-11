@@ -27,7 +27,7 @@ func StartServer(container container.Dependency) {
 
 func setupAccountPaths(router *gin.RouterGroup, container container.Dependency) {
 	var accountController = handlers.NewAccountController(container.Services.AccountService)
-	var transactionController = handlers.NewTransactionController(container.Services.TransactionService, container.Services.AccountService)
+	var transactionController = handlers.NewTransactionController(container.Services.TransactionService)
 
 	accountController.Router(router)
 	transactionController.Router(router)

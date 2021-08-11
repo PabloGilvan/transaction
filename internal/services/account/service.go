@@ -12,6 +12,7 @@ import (
 type AccountService interface {
 	SaveAccount(ctx context.Context, persist AccountPersist) (AccountResponse, error)
 	LoadAccount(ctx context.Context, id string) (AccountResponse, error)
+	UpdateAccountLimit(ctx context.Context, id string, limit float64) error
 }
 
 type AccountServiceImpl struct {
@@ -29,12 +30,13 @@ func (service AccountServiceImpl) SaveAccount(ctx context.Context, persist Accou
 	accountNumber := services.GenerateAccountNumber(services.GenerateTraceNumber(), time.Now())
 
 	model, err := service.Repository.SaveAccount(account.Account{
-		ID:             uuid.New().String(),
-		Number:         accountNumber,
-		DocumentNumber: persist.DocumentNumber,
-		Active:         true,
-		CreateDate:     time.Now(),
-		UpdateDate:     time.Now(),
+		ID:                   uuid.New().String(),
+		Number:               accountNumber,
+		DocumentNumber:       persist.DocumentNumber,
+		Active:               true,
+		AvailableCreditLimit: persist.AvailableCreditLimit,
+		CreateDate:           time.Now(),
+		UpdateDate:           time.Now(),
 	})
 
 	if err != nil {
@@ -54,4 +56,8 @@ func (service AccountServiceImpl) LoadAccount(ctx context.Context, uuid string) 
 		return AccountResponse{}, gorm.ErrRecordNotFound
 	}
 	return ConvertModelToResponse(*model), nil
+}
+
+func (service AccountServiceImpl) UpdateAccountLimit(ctx context.Context, id string, limit float64) error {
+	return service.Repository.UpdateAccountLimit(id, limit)
 }

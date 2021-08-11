@@ -26,8 +26,10 @@ func (repo OperationTypeRepositoryImpl) SaveOperation(operationModel OperationTy
 		return nil, err
 	}
 
-	conn.Save(operationModel)
-
+	err = conn.Save(operationModel).Error
+	if err != nil {
+		return nil, err
+	}
 	return &operationModel, nil
 }
 

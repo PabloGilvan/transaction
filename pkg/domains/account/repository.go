@@ -8,6 +8,7 @@ import (
 type AccountRepository interface {
 	SaveAccount(account Account) (*Account, error)
 	LoadAccount(id string) (*Account, error)
+	UpdateAccountLimit(id string, limit float64) error
 }
 
 type AccountRepositoryImpl struct {
@@ -38,6 +39,7 @@ func (repo AccountRepositoryImpl) LoadAccount(id string) (*Account, error) {
 
 	return &account, nil
 }
+
 func (repo AccountRepositoryImpl) SaveAccount(accountModel Account) (*Account, error) {
 	conn, err := repo.DatabaseManager.GetDatabaseConnection()
 	if err != nil {
@@ -50,4 +52,14 @@ func (repo AccountRepositoryImpl) SaveAccount(accountModel Account) (*Account, e
 	}
 
 	return &accountModel, nil
+}
+
+func (repo AccountRepositoryImpl) UpdateAccountLimit(id string, limit float64) error {
+	conn, err := repo.DatabaseManager.GetDatabaseConnection()
+	if err != nil {
+		return err
+	}
+
+	var account = Account{ID: id}
+	return conn.Model(&account).Update("available_credit_limit", limit).Error
 }

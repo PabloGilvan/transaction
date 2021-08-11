@@ -33,5 +33,9 @@ func ProcessIfBusinessError(err error) (*CustomResponseError, int) {
 		return errorMessage, http.StatusBadRequest
 	}
 
+	if err == commons.ErrLimitExceeded {
+		return errorMessage, http.StatusBadRequest
+	}
+
 	return errorMessage, http.StatusInternalServerError
 }

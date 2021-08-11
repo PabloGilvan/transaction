@@ -6,6 +6,7 @@ import (
 
 type TransactionRepository interface {
 	SaveTransaction(transactionModel Transaction) (*Transaction, error)
+	LoadPendingTransactionsSorted(accountID string) ([]Transaction, error)
 }
 
 type TransactionRepositoryImpl struct {
@@ -27,4 +28,14 @@ func (repo TransactionRepositoryImpl) SaveTransaction(transactionModel Transacti
 	conn.Save(transactionModel)
 
 	return &transactionModel, nil
+}
+
+func (repo TransactionRepositoryImpl) LoadPendingTransactionsSorted(accountID string) ([]Transaction, error) {
+	conn, err := repo.DatabaseManager.GetDatabaseConnection()
+	if err != nil {
+		return nil, err
+	}
+
+	//var pendingTransactions = conn.Where("")
+	return nil, err
 }
